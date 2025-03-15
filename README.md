@@ -1,6 +1,6 @@
-# Online Banking Website
+# 🐷 PiggyBank
 
-This is a online banking website
+PiggyBank is a simple, intuitive, and playful web-based banking platform. It allows users to simulate basic banking operations in a fun and approachable way.
 
 ## Structure
 
