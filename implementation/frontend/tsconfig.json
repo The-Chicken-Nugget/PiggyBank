@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      /* Allow absolute imports using "@/..."  */
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["src/*"]
+      },
+  
+      /* The rest are sane defaults for a JS (or TS) Vite project */
+      "target": "ES2020",
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "jsx": "react-jsx",
+      "strict": false,
+      "allowJs": true,
+      "checkJs": false,
+      "noEmit": true,
+      "skipLibCheck": true
+    },
+    "include": ["src"]
+  }
+  

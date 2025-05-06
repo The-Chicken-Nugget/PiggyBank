@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  # ────────────────────────────────
+  test-backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: bankuser
+          POSTGRES_PASSWORD: bankpass
+          POSTGRES_DB: bankdb
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U bankuser"
+          --health-interval=10s
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install & test backend
+        run: |
+          cd backend
+          npm ci
+          npm test
+
+  # ────────────────────────────────
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install & test frontend
+        run: |
+          cd frontend
+          npm ci
+          # Uncomment next line once you have FE unit tests
+          # npm test
+
+  # ────────────────────────────────
+  e2e:
+    needs: [ test-backend, test-frontend ]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: bankuser
+          POSTGRES_PASSWORD: bankpass
+          POSTGRES_DB: bankdb
+        options: >-
+          --health-cmd="pg_isready -U bankuser"
+          --health-interval=10s
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start backend (and db already running)
+        run: |
+          docker compose up -d db backend
+          npx wait-on http://localhost:4000/api/ping
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend deps
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run Cypress smoke tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: frontend
+          start: |
+            npm run dev -- --host
+          wait-on: http://localhost:5173
+          wait-on-timeout: 60
+          browser: chrome

@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*────────────────────────────────────────────────────────────────────────────
+  Global Base Styles and Piggy-Bank Dark Theme Overrides
+────────────────────────────────────────────────────────────────────────────*/
+:root {
+  /* Typography & rendering */
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light dark;
+}
+
+/* Full-screen layout */
+html,
+#root,
+body {
+  height: 100%;
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Apply our Piggy-Bank dark theme globally */
+body {
+  @apply bg-background text-text-primary;
+}
+
+/* Headings */
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+/* Links */
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+/* Fallback button styling for any non-Tailwind buttons */
+button {
+  @apply rounded-snout border border-transparent px-4 py-2 font-medium bg-surface text-text-primary transition-colors;
+}
+button:hover {
+  @apply bg-piggy-brand-dark;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Light-mode overrides */
+@media (prefers-color-scheme: light) {
+  body {
+    @apply bg-foreground text-text-secondary;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    @apply bg-surface;
+  }
+}
+
+/*────────────────────────────────────────────────────────────────────────────
+  Legacy CSS Variables (shadcn/ui support)
+────────────────────────────────────────────────────────────────────────────*/
+@layer base {
+  :root {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 14.9%;
+    --card-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}

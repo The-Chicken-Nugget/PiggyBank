@@ -1,0 +1,30 @@
+name: CD to Personal Server
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
+
+      - name: Pull & restart on server
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            cd ~/apps/Piggybank/PiggyBank-Dev
+            git fetch --prune
+            git reset --hard origin/master
+            docker-compose pull
+            docker-compose up -d --build
+          EOF
